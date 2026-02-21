@@ -1,17 +1,20 @@
 /**
- * Navbar.jsx  (v2)
+ * Navbar.jsx  (v3)
  * ────────────────
  * Now includes:
  *  - Tab navigation (Explorer | Compare | Trending | Org | Code Search)
  *  - Runtime GitHub token input (Settings popover)
  *  - Dark mode toggle
+ *  - PWA install button
+ *  - GitHub OAuth login / user avatar
  */
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FiGithub, FiSun, FiMoon, FiSettings, FiX, FiCheck } from 'react-icons/fi';
+import { FiGithub, FiSun, FiMoon, FiSettings, FiX, FiCheck, FiLogOut } from 'react-icons/fi';
 import { HiSparkles } from 'react-icons/hi2';
 import { MdCompare, MdTrendingUp, MdCode, MdCorporateFare } from 'react-icons/md';
 import { useAppContext } from '../context/AppContext';
+import InstallPWAButton from './InstallPWAButton';
 
 const NAV_TABS = [
     { to: '/', label: 'Explorer', icon: FiGithub },
@@ -22,7 +25,7 @@ const NAV_TABS = [
 ];
 
 const Navbar = ({ darkMode, toggleDark }) => {
-    const { token, setToken } = useAppContext();
+    const { token, setToken, oauthUser, login, logout } = useAppContext();
     const [showSettings, setShowSettings] = useState(false);
     const [inputToken, setInputToken] = useState(token ?? '');
 
@@ -69,49 +72,93 @@ const Navbar = ({ darkMode, toggleDark }) => {
 
                     {/* Actions */}
                     <div className="flex items-center gap-2">
-                        {/* Token settings */}
-                        <div className="relative">
-                            <button
-                                onClick={() => setShowSettings((v) => !v)}
-                                aria-label="API token settings"
-                                title="Set GitHub Token"
-                                className={`p-2 rounded-xl border transition-all duration-200 hover:scale-110 active:scale-95 shadow-sm
-                  ${token
-                                        ? 'border-emerald-300 dark:border-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
-                                        : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300'
-                                    }`}
-                            >
-                                <FiSettings size={16} />
-                            </button>
 
-                            {showSettings && (
-                                <div className="absolute right-0 top-full mt-2 w-80 glass-card p-4 z-50 animate-fade-in">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <h3 className="text-sm font-bold text-slate-800 dark:text-white">GitHub API Token</h3>
-                                        <button onClick={() => setShowSettings(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
-                                            <FiX size={15} />
+                        {/* PWA Install */}
+                        <InstallPWAButton variant="navbar" />
+
+                        {/* OAuth Login / User Avatar */}
+                        {oauthUser ? (
+                            <div className="flex items-center gap-2">
+                                <img
+                                    src={oauthUser.avatar_url}
+                                    alt={oauthUser.login}
+                                    title={oauthUser.name || oauthUser.login}
+                                    className="w-7 h-7 rounded-full ring-2 ring-indigo-400/60 object-cover"
+                                />
+                                <span className="hidden lg:block text-xs font-semibold text-slate-700 dark:text-slate-200 max-w-[80px] truncate">
+                                    {oauthUser.login}
+                                </span>
+                                <button
+                                    onClick={logout}
+                                    title="Logout"
+                                    aria-label="Logout from GitHub"
+                                    className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700
+                                               bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400
+                                               hover:text-red-500 hover:border-red-300 dark:hover:border-red-500
+                                               transition-all duration-200 hover:scale-110 active:scale-95"
+                                >
+                                    <FiLogOut size={14} />
+                                </button>
+                            </div>
+                        ) : (
+                            <button
+                                onClick={login}
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
+                                           bg-slate-900 dark:bg-white text-white dark:text-slate-900
+                                           hover:bg-slate-700 dark:hover:bg-slate-100
+                                           transition-all duration-200 hover:shadow-lg active:scale-95"
+                                title="Login with GitHub OAuth — removes rate limits"
+                            >
+                                <FiGithub size={13} />
+                                <span className="hidden sm:inline">Login</span>
+                            </button>
+                        )}
+
+                        {/* Token settings — hide when OAuth is active */}
+                        {!oauthUser && (
+                            <div className="relative">
+                                <button
+                                    onClick={() => setShowSettings((v) => !v)}
+                                    aria-label="API token settings"
+                                    title="Set GitHub Token"
+                                    className={`p-2 rounded-xl border transition-all duration-200 hover:scale-110 active:scale-95 shadow-sm
+                      ${token
+                                            ? 'border-emerald-300 dark:border-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
+                                            : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                                        }`}
+                                >
+                                    <FiSettings size={16} />
+                                </button>
+
+                                {showSettings && (
+                                    <div className="absolute right-0 top-full mt-2 w-80 glass-card p-4 z-50 animate-fade-in">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <h3 className="text-sm font-bold text-slate-800 dark:text-white">GitHub API Token</h3>
+                                            <button onClick={() => setShowSettings(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                                                <FiX size={15} />
+                                            </button>
+                                        </div>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+                                            Raises rate limit from 60 → 5,000 req/hr.{' '}
+                                            <a href="https://github.com/settings/tokens" target="_blank" rel="noreferrer"
+                                                className="text-brand-500 hover:underline">Generate token ↗</a>
+                                        </p>
+                                        <input
+                                            type="password"
+                                            value={inputToken}
+                                            onChange={(e) => setInputToken(e.target.value)}
+                                            placeholder="ghp_xxxxxxxxxxxxx"
+                                            className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700
+                                   bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200
+                                   outline-none focus:border-brand-500 mb-3"
+                                        />
+                                        <button onClick={handleSave} className="btn-primary w-full justify-center text-xs">
+                                            <FiCheck size={13} /> Save & Reload
                                         </button>
                                     </div>
-                                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
-                                        Raises rate limit from 60 → 5,000 req/hr.{' '}
-                                        <a href="https://github.com/settings/tokens" target="_blank" rel="noreferrer"
-                                            className="text-brand-500 hover:underline">Generate token ↗</a>
-                                    </p>
-                                    <input
-                                        type="password"
-                                        value={inputToken}
-                                        onChange={(e) => setInputToken(e.target.value)}
-                                        placeholder="ghp_xxxxxxxxxxxxx"
-                                        className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700
-                               bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200
-                               outline-none focus:border-brand-500 mb-3"
-                                    />
-                                    <button onClick={handleSave} className="btn-primary w-full justify-center text-xs">
-                                        <FiCheck size={13} /> Save & Reload
-                                    </button>
-                                </div>
-                            )}
-                        </div>
+                                )}
+                            </div>
+                        )}
 
                         {/* Dark mode */}
                         <button

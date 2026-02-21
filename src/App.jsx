@@ -16,6 +16,7 @@ import TrendingPage from './pages/TrendingPage';
 import ComparePage from './pages/ComparePage';
 import CodeSearchPage from './pages/CodeSearchPage';
 import OrgPage from './pages/OrgPage';
+import OAuthCallback from './pages/OAuthCallback';
 
 // Inject the slide-in animation once
 const injectSlideAnimation = () => {
@@ -58,6 +59,7 @@ const App = () => {
             <Route path="/compare" element={<ComparePage />} />
             <Route path="/codesearch" element={<CodeSearchPage />} />
             <Route path="/org" element={<OrgPage />} />
+            <Route path="/auth/callback" element={<OAuthCallback />} />
           </Routes>
         </div>
       </BrowserRouter>

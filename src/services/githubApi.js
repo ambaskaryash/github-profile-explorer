@@ -7,9 +7,12 @@
  */
 import axios from 'axios';
 
-// ── Token resolution (sessionStorage > env) ───────────────────────────────────
+// ── Token resolution (OAuth > sessionStorage PAT > env) ──────────────────────
 const resolveToken = () =>
-    sessionStorage.getItem('gitexplorer_token') ?? import.meta.env.VITE_GITHUB_TOKEN ?? '';
+    sessionStorage.getItem('gitexplorer_oauth_token') ??
+    sessionStorage.getItem('gitexplorer_token') ??
+    import.meta.env.VITE_GITHUB_TOKEN ??
+    '';
 
 // ── Axios instance ────────────────────────────────────────────────────────────
 const githubApi = axios.create({

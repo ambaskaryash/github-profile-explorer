@@ -1,0 +1,62 @@
+{
+    "name": "GitExplorer – GitHub Profile & Repo Explorer",
+    "short_name": "GitExplorer",
+    "description": "Search GitHub profiles, explore repositories, visualise activity, compare developers, and discover trending projects.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0f172a",
+    "theme_color": "#6366f1",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-512-maskable.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Trending Repos",
+            "short_name": "Trending",
+            "description": "Browse trending GitHub repositories",
+            "url": "/trending",
+            "icons": [
+                {
+                    "src": "/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Compare Developers",
+            "short_name": "Compare",
+            "description": "Compare two GitHub profiles side-by-side",
+            "url": "/compare",
+            "icons": [
+                {
+                    "src": "/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ],
+    "categories": [
+        "developer",
+        "productivity",
+        "utilities"
+    ],
+    "screenshots": []
+}
