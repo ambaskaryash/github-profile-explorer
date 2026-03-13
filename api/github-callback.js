@@ -51,7 +51,11 @@ export default async function handler(req, res) {
         const data = await response.json();
 
         if (data.error) {
-            res.status(400).json({ error: data.error_description || data.error });
+            res.status(400).json({
+                error: data.error_description || data.error,
+                github_error: data.error,
+                github_error_description: data.error_description
+            });
             return;
         }
 
