@@ -41,7 +41,7 @@ export default defineConfig({
         // Cache the app shell (JS/CSS/HTML)
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         // Offline fallback for navigation requests
-        navigateFallback: '/offline.html',
+        navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api\//],
         runtimeCaching: [
           {
