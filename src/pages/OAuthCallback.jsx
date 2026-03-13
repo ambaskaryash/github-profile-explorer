@@ -17,26 +17,37 @@ const OAuthCallback = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const code = new URLSearchParams(window.location.search).get('code');
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get('code');
+        const state = params.get('state');
 
         if (!code) {
             setError('No OAuth code found in the URL. Please try logging in again.');
             return;
         }
 
+        let isMounted = true;
+
         const exchange = async () => {
             try {
                 setStatus('Exchanging authorization code…');
 
                 // Call the Vercel serverless function
-                const tokenRes = await fetch(`/api/github-callback?code=${code}`);
-                const tokenData = await tokenRes.json();
+                const tokenRes = await fetch(`/api/github-callback?code=${code}${state ? `&state=${state}` : ''}`);
+                
+                if (!tokenRes.ok) {
+                    const errorData = await tokenRes.json().catch(() => ({}));
+                    throw new Error(errorData.error || `Server error: ${tokenRes.status}`);
+                }
 
-                if (!tokenRes.ok || tokenData.error) {
-                    throw new Error(tokenData.error || 'Failed to exchange OAuth code.');
+                const tokenData = await tokenRes.json();
+                if (tokenData.error) {
+                    throw new Error(tokenData.error);
                 }
 
                 const { access_token } = tokenData;
+                if (!isMounted) return;
+                
                 setStatus('Fetching your GitHub profile…');
 
                 // Fetch the authenticated user's profile
@@ -50,18 +61,28 @@ const OAuthCallback = () => {
                 if (!userRes.ok) throw new Error('Failed to fetch GitHub user profile.');
                 const user = await userRes.json();
 
+                if (!isMounted) return;
+
                 // Save to context + sessionStorage
                 setOauthSession(access_token, user);
                 setStatus(`Welcome, ${user.login}! Redirecting…`);
 
-                setTimeout(() => navigate('/'), 800);
+                setTimeout(() => {
+                    if (isMounted) navigate('/');
+                }, 800);
             } catch (err) {
                 console.error('OAuth error:', err);
-                setError(err.message || 'An unknown error occurred during login.');
+                if (isMounted) {
+                    setError(err.message || 'An unknown error occurred during login.');
+                }
             }
         };
 
         exchange();
+        
+        return () => {
+            isMounted = false;
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
