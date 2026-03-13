@@ -9,6 +9,7 @@ import { FiStar, FiGitBranch, FiLoader, FiTrendingUp, FiRefreshCw } from 'react-
 import { getTrendingRepos } from '../services/githubApi';
 import { getLanguageColor, formatNumber } from '../utils/formatUtils';
 import ErrorMessage from '../components/ErrorMessage';
+import SEO from '../components/SEO';
 
 const LANGUAGES = ['', 'JavaScript', 'TypeScript', 'Python', 'Rust', 'Go', 'Java', 'C++', 'C', 'Ruby', 'PHP', 'Swift', 'Kotlin'];
 const SINCE_OPTIONS = [
@@ -53,6 +54,11 @@ const TrendingPage = () => {
 
     return (
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <SEO 
+                title={`${language || 'All'} Trending Repositories`} 
+                description={`Discover the hottest ${language} repositories on GitHub ${since === 'daily' ? 'today' : since === 'weekly' ? 'this week' : 'this month'}.`}
+                path="/trending"
+            />
             {/* Header */}
             <div className="text-center mb-8">
                 <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center justify-center gap-3">

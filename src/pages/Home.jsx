@@ -26,6 +26,7 @@ import LanguageChart from '../components/LanguageChart';
 import ContributionHeatmap from '../components/ContributionHeatmap';
 import DevCard from '../components/DevCard';
 import RepoDetailPanel from '../components/RepoDetailPanel';
+import SEO from '../components/SEO';
 
 const EmptyState = () => (
     <div className="flex flex-col items-center justify-center gap-4 py-20 text-center animate-fade-in">
@@ -85,6 +86,11 @@ const Home = ({ darkMode }) => {
 
     return (
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+            <SEO 
+                title={profile?.login ? `${profile.login}'s GitHub Profile` : 'Explorer'} 
+                description={profile?.bio || 'Explore GitHub profiles, repositories, and contribution stats.'}
+                path={profile?.login ? `/?u=${profile.login}` : '/'}
+            />
             {/* Hero */}
             <div className="text-center space-y-2">
                 <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">

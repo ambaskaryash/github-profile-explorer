@@ -11,6 +11,7 @@ import { PieChart, Pie, Cell, Tooltip as ReTooltip, ResponsiveContainer } from '
 import { getUserProfile, getUserRepos } from '../services/githubApi';
 import { formatNumber, formatDate, getLanguageColor } from '../utils/formatUtils';
 import ErrorMessage from '../components/ErrorMessage';
+import SEO from '../components/SEO';
 
 // ── User column ───────────────────────────────────────────────────────────────
 const UserColumn = ({ label, data }) => {
@@ -132,6 +133,11 @@ const ComparePage = () => {
 
     return (
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <SEO 
+                title={dataA && dataB ? `${dataA.profile.login} vs ${dataB.profile.login} Comparison` : 'Compare Developers'} 
+                description="Compare two GitHub developers side-by-side to see who has more followers, repos, and better stats."
+                path="/compare"
+            />
             {/* Header */}
             <div className="text-center mb-8">
                 <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white flex items-center justify-center gap-3">

@@ -11,6 +11,7 @@ import { formatNumber, formatDate } from '../utils/formatUtils';
 import ErrorMessage from '../components/ErrorMessage';
 import StatCard from '../components/StatCard';
 import { useNavigate } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 const OrgPage = () => {
     const [orgName, setOrgName] = useState('');
@@ -51,6 +52,11 @@ const OrgPage = () => {
 
     return (
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <SEO 
+                title={org ? `${org.name || org.login} Organization Explorer` : 'Organization Explorer'} 
+                description={org?.description || 'Browse GitHub organizations, their members, and top repositories.'}
+                path="/org"
+            />
             {/* Header */}
             <div className="text-center mb-8">
                 <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white flex items-center justify-center gap-3">

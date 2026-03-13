@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { FiSearch, FiCode, FiLoader, FiExternalLink } from 'react-icons/fi';
 import { searchCode } from '../services/githubApi';
 import ErrorMessage from '../components/ErrorMessage';
+import SEO from '../components/SEO';
 
 const ResultCard = ({ item }) => {
     const [expanded, setExpanded] = useState(false);
@@ -79,6 +80,11 @@ const CodeSearchPage = () => {
 
     return (
         <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <SEO 
+                title={searched ? `Code Search: ${query}` : 'Code Search'} 
+                description="Search code across millions of GitHub repositories or within a specific user's codebase."
+                path="/codesearch"
+            />
             {/* Header */}
             <div className="text-center mb-8">
                 <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white flex items-center justify-center gap-3">
